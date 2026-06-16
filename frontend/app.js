@@ -403,8 +403,9 @@ window.addEventListener("load", () => {
 
 
 
+
 // ─────────────────────────────────────────
-// BLOCK 8 — CURSOR PARTICLE TRAIL (HERO ONLY)
+// BLOCK 8 — ANTIGRAVITY INTERACTIVE BACKGROUND (HERO ONLY)
 // ─────────────────────────────────────────
 (function initParticles() {
   const heroSection = document.getElementById("home");
@@ -417,65 +418,102 @@ window.addEventListener("load", () => {
   canvas.style.left = "0";
   canvas.style.width = "100%";
   canvas.style.height = "100%";
-  canvas.style.zIndex = "1"; // Just above background
+  canvas.style.zIndex = "1"; // Behind text, above background
   canvas.style.pointerEvents = "none";
   heroSection.insertBefore(canvas, heroSection.firstChild);
 
   const ctx = canvas.getContext("2d");
   let width, height;
-
-  function resize() {
-    width = canvas.width = heroSection.offsetWidth;
-    height = canvas.height = heroSection.offsetHeight;
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  const particles = [];
+  let particles = [];
   const colors = ["#4285F4", "#EA4335", "#FBBC05", "#9B27B0", "#FF4081", "#00BCD4"];
 
-  let mouse = { x: -1000, y: -1000 };
+  function initPattern() {
+    particles = [];
+    width = canvas.width = heroSection.offsetWidth;
+    height = canvas.height = heroSection.offsetHeight;
+    
+    // Create concentric rings of dashed particles
+    const cx = width / 2;
+    const cy = height / 2;
+    const maxRadius = Math.max(width, height) / 1.2;
+    const spacing = 35; // Space between rings
+    
+    for (let r = 80; r <= maxRadius; r += spacing) {
+      // Circumference = 2 * PI * r
+      const numInRing = Math.floor((2 * Math.PI * r) / 35); // Space between particles along the ring
+      for (let i = 0; i < numInRing; i++) {
+        // Slight offset per ring for a spiral/organic look
+        const theta = (i / numInRing) * 2 * Math.PI + (r * 0.01);
+        const bx = cx + r * Math.cos(theta);
+        const by = cy + r * Math.sin(theta);
+
+        particles.push({
+          x: bx,
+          y: by,
+          baseX: bx,
+          baseY: by,
+          vx: 0,
+          vy: 0,
+          angle: theta + Math.PI / 2, // Tangent to circle
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 1.5 + 1.5,
+          alpha: Math.min(1, r / 150) // Fade out slightly near the very center
+        });
+      }
+    }
+  }
+
+  window.addEventListener("resize", initPattern);
+  initPattern();
+
+  let mouse = { x: -1000, y: -1000, radius: 180 };
 
   heroSection.addEventListener("mousemove", (e) => {
     const rect = heroSection.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
+  });
 
-    // Spawn particles on move
-    for(let i = 0; i < 4; i++) {
-      particles.push({
-        x: mouse.x,
-        y: mouse.y,
-        vx: (Math.random() - 0.5) * 3,
-        vy: (Math.random() - 0.5) * 3,
-        life: 1, // 1 to 0
-        decay: Math.random() * 0.02 + 0.015,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: Math.random() * 2 + 1.5,
-        angle: Math.random() * Math.PI * 2
-      });
-    }
+  heroSection.addEventListener("mouseleave", () => {
+    mouse.x = -1000;
+    mouse.y = -1000;
   });
 
   function animate() {
     ctx.clearRect(0, 0, width, height);
     
-    for (let i = particles.length - 1; i >= 0; i--) {
+    for (let i = 0; i < particles.length; i++) {
       let p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= p.decay;
+      let dx = mouse.x - p.x;
+      let dy = mouse.y - p.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (p.life <= 0) {
-        particles.splice(i, 1);
-        continue;
+      if (dist < mouse.radius) {
+        // Dynamic Repulsion
+        let force = (mouse.radius - dist) / mouse.radius;
+        // Ease the force so it's smooth
+        let push = force * force * 4; 
+        p.vx -= (dx / dist) * push;
+        p.vy -= (dy / dist) * push;
       }
 
+      // Spring force back to origin
+      p.vx += (p.baseX - p.x) * 0.04;
+      p.vy += (p.baseY - p.y) * 0.04;
+
+      // Friction
+      p.vx *= 0.85;
+      p.vy *= 0.85;
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Draw dashed particle
       ctx.beginPath();
-      ctx.globalAlpha = p.life;
-      let lineLength = 8 * p.life;
-      ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x + Math.cos(p.angle) * lineLength, p.y + Math.sin(p.angle) * lineLength);
+      ctx.globalAlpha = p.alpha;
+      let lineLength = 6;
+      ctx.moveTo(p.x - Math.cos(p.angle) * (lineLength / 2), p.y - Math.sin(p.angle) * (lineLength / 2));
+      ctx.lineTo(p.x + Math.cos(p.angle) * (lineLength / 2), p.y + Math.sin(p.angle) * (lineLength / 2));
       ctx.strokeStyle = p.color;
       ctx.lineWidth = p.size;
       ctx.lineCap = "round";
