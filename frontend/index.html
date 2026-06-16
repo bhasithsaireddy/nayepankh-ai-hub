@@ -12,6 +12,7 @@
   
 </head>
 <body class="bg-white text-gray-900 font-sans">
+<div id="cursor-trail"></div>
 
 
 <!-- ═══════════════════════════════════════════
@@ -104,6 +105,57 @@
   </div>
 </section>
 
+
+<!-- ═══════════════════════════════════════════
+     VISION CAROUSEL
+═══════════════════════════════════════════ -->
+<section id="vision-carousel" class="py-20 px-6 bg-white border-b border-gray-100">
+  <div class="max-w-5xl mx-auto flex items-center justify-between">
+    <button id="carousel-prev" class="text-4xl text-gray-300 hover:text-black transition-colors px-4">&lt;</button>
+    
+    <div class="flex-1 flex flex-col md:flex-row items-center gap-10 px-4 relative overflow-hidden" id="carousel-container">
+      
+      <!-- Slide 1 -->
+      <div class="carousel-slide flex flex-col md:flex-row items-center gap-10 w-full transition-opacity duration-500">
+        <div class="w-72 h-48 rounded-[50%] overflow-hidden shadow-md flex-shrink-0">
+          <img src="assets/carousel_food.png" alt="Food Relief" class="w-full h-full object-cover grayscale" />
+        </div>
+        <div class="flex-1 text-lg md:text-xl text-gray-700 leading-relaxed font-medium">
+          "NayePankh Foundation promotes the culture of kindness and wants to instill the sense of giving back to the society amongst modern youth.."
+        </div>
+      </div>
+      
+      <!-- Slide 2 (Hidden) -->
+      <div class="carousel-slide hidden flex flex-col md:flex-row items-center gap-10 w-full transition-opacity duration-500">
+        <div class="w-72 h-48 rounded-[50%] overflow-hidden shadow-md flex-shrink-0">
+          <img src="assets/carousel_women.png" alt="Women Empowerment" class="w-full h-full object-cover grayscale" />
+        </div>
+        <div class="flex-1 text-lg md:text-xl text-gray-700 leading-relaxed font-medium">
+          "NayePankh Foundation works with a vision to create a society where children can prosper to their complete potential and enjoy equality in its true essence."
+        </div>
+      </div>
+      
+      <!-- Slide 3 (Hidden) -->
+      <div class="carousel-slide hidden flex flex-col md:flex-row items-center gap-10 w-full transition-opacity duration-500">
+        <div class="w-72 h-48 rounded-[50%] overflow-hidden shadow-md flex-shrink-0">
+          <img src="assets/carousel_relief.png" alt="Relief Work" class="w-full h-full object-cover grayscale" />
+        </div>
+        <div class="flex-1 text-lg md:text-xl text-gray-700 leading-relaxed font-medium">
+          "NayePankh Foundation has been working since 2021 for under and less privileged people in the field of hunger, sanitary, health, education, awareness and rights.."
+        </div>
+      </div>
+
+    </div>
+    
+    <button id="carousel-next" class="text-4xl text-gray-300 hover:text-black transition-colors px-4">&gt;</button>
+  </div>
+  <div class="flex justify-center gap-2 mt-10" id="carousel-dots">
+    <div class="w-2.5 h-2.5 rounded-full bg-black cursor-pointer dot" data-index="0"></div>
+    <div class="w-2.5 h-2.5 rounded-full bg-gray-300 cursor-pointer dot" data-index="1"></div>
+    <div class="w-2.5 h-2.5 rounded-full bg-gray-300 cursor-pointer dot" data-index="2"></div>
+  </div>
+</section>
+
 <!-- ═══════════════════════════════════════════
      MISSIONS
 ═══════════════════════════════════════════ -->
@@ -153,6 +205,22 @@
           Join Now →
         </a>
       </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOUNDER QUOTE
+═══════════════════════════════════════════ -->
+<section id="founder-quote" class="py-24 px-6" style="background:#1A1A1A;">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-10" data-aos="fade-up">
+      "If we all do something, then together there is no problem that we cannot solve!"
+    </h2>
+    <div data-aos="fade-up" data-aos-delay="200">
+      <p class="text-white font-bold tracking-widest uppercase text-sm mb-1">PRASHANT SHUKLA</p>
+      <p class="text-gray-400 text-sm">Founder & President, NayePankh Foundation</p>
     </div>
   </div>
 </section>
@@ -244,37 +312,46 @@
   </div>
 </section>
 
+
 <!-- ═══════════════════════════════════════════
-     FOOTER
+     FOOTER REVAMPED
 ═══════════════════════════════════════════ -->
-<footer id="footer" style="background:#1A1A1A;" class="text-gray-400 pt-14 pb-6 px-6">
-  <div class="max-w-5xl mx-auto">
-    <div class="grid md:grid-cols-3 gap-10 mb-10">
-      <div>
-        <div class="text-2xl font-extrabold mb-2" style="color:#FFFFFF;">🌿 NayePankh</div>
-        <p class="text-sm leading-relaxed">Uplifting Underprivileged Communities across India through youth-led action.</p>
-      </div>
-      <div>
-        <div class="font-semibold text-white mb-4">Quick Links</div>
-        <ul class="space-y-2 text-sm">
-          <li><a href="#home"     class="hover:text-white transition-colors">Home</a></li>
-          <li><a href="#missions" class="hover:text-white transition-colors">About</a></li>
-          <li><a href="#register" class="hover:text-white transition-colors">Volunteer</a></li>
-          <li><a href="mailto:nayepankh2021@gmail.com" class="hover:text-white transition-colors">Donate</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="font-semibold text-white mb-4">Contact Us</div>
-        <ul class="space-y-2 text-sm">
-          <li>📧 <a href="mailto:nayepankh2021@gmail.com" class="hover:text-white transition-colors">nayepankh2021@gmail.com</a></li>
-          <li>📞 +91-XXXXXXXXXX</li>
-          <li>📍 Kanpur / Ghaziabad, UP</li>
-        </ul>
+<footer id="footer" class="bg-white pt-16 pb-8 px-6 border-t border-gray-200">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-center mb-10">
+    
+    <!-- Left: Get in touch -->
+    <div>
+      <h2 class="text-5xl md:text-6xl font-extrabold text-black mb-8">Get in touch</h2>
+      <p class="text-gray-800 font-medium mb-2">contact@nayepankh.com</p>
+      <p class="text-gray-800 font-medium mb-8">Mobile No: +91- 8318500748</p>
+      
+      <p class="text-sm font-bold tracking-widest uppercase mb-4 text-gray-900">Follow us</p>
+      <div class="flex gap-5">
+        <a href="#" class="text-gray-900 hover:text-gray-500 transition-colors font-bold text-lg">IG</a>
+        <a href="#" class="text-gray-900 hover:text-gray-500 transition-colors font-bold text-lg">IN</a>
+        <a href="#" class="text-gray-900 hover:text-gray-500 transition-colors font-bold text-lg">YT</a>
+        <a href="#" class="text-gray-900 hover:text-gray-500 transition-colors font-bold text-lg">FB</a>
+        <a href="#" class="text-gray-900 hover:text-gray-500 transition-colors font-bold text-lg">X</a>
       </div>
     </div>
-    <div class="border-t border-gray-800 pt-6 text-center text-xs text-gray-600">
-      © 2025 NayePankh Foundation | Built with ❤️ for NayePankh Internship
+    
+    <!-- Middle: Links -->
+    <div class="flex flex-col gap-4 font-medium text-gray-800 items-start md:items-center text-sm md:text-base">
+      <a href="#" class="hover:text-black transition-colors">Contact Us</a>
+      <a href="#" class="hover:text-black transition-colors">Terms and Conditions</a>
+      <a href="#" class="hover:text-black transition-colors">Privacy Policy</a>
+      <a href="#" class="hover:text-black transition-colors">Cancellation and Refund</a>
+      <a href="#" class="hover:text-black transition-colors">Shipping and Exchange</a>
     </div>
+
+    <!-- Right: Team Photo -->
+    <div class="w-full h-64 md:h-72 rounded-2xl overflow-hidden shadow-lg">
+      <img src="assets/footer_team.png" alt="NayePankh Team" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+    </div>
+
+  </div>
+  <div class="max-w-6xl mx-auto border-t border-gray-100 pt-6 text-center text-xs text-gray-500 font-medium">
+    © 2026 NayePankh Foundation | All rights reserved.
   </div>
 </footer>
 

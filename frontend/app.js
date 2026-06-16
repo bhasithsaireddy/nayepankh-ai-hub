@@ -404,125 +404,86 @@ window.addEventListener("load", () => {
 
 
 
+
 // ─────────────────────────────────────────
-// BLOCK 8 — ANTIGRAVITY INTERACTIVE BACKGROUND (HERO ONLY)
+// BLOCK 8 — CURSOR TRAIL
 // ─────────────────────────────────────────
-(function initParticles() {
-  const heroSection = document.getElementById("home");
-  if (!heroSection) return;
+const cursorTrail = document.getElementById("cursor-trail");
+if (cursorTrail) {
+  let mouseX = 0, mouseY = 0;
+  let trailX = 0, trailY = 0;
 
-  const canvas = document.createElement("canvas");
-  canvas.id = "particle-canvas";
-  canvas.style.position = "absolute";
-  canvas.style.top = "0";
-  canvas.style.left = "0";
-  canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  canvas.style.zIndex = "1"; // Behind text, above background
-  canvas.style.pointerEvents = "none";
-  heroSection.insertBefore(canvas, heroSection.firstChild);
-
-  const ctx = canvas.getContext("2d");
-  let width, height;
-  let particles = [];
-  const colors = ["#4285F4", "#EA4335", "#FBBC05", "#9B27B0", "#FF4081", "#00BCD4"];
-
-  function initPattern() {
-    particles = [];
-    width = canvas.width = heroSection.offsetWidth;
-    height = canvas.height = heroSection.offsetHeight;
-    
-    // Create concentric rings of dashed particles
-    const cx = width / 2;
-    const cy = height / 2;
-    const maxRadius = Math.max(width, height) / 1.2;
-    const spacing = 35; // Space between rings
-    
-    for (let r = 80; r <= maxRadius; r += spacing) {
-      // Circumference = 2 * PI * r
-      const numInRing = Math.floor((2 * Math.PI * r) / 35); // Space between particles along the ring
-      for (let i = 0; i < numInRing; i++) {
-        // Slight offset per ring for a spiral/organic look
-        const theta = (i / numInRing) * 2 * Math.PI + (r * 0.01);
-        const bx = cx + r * Math.cos(theta);
-        const by = cy + r * Math.sin(theta);
-
-        particles.push({
-          x: bx,
-          y: by,
-          baseX: bx,
-          baseY: by,
-          vx: 0,
-          vy: 0,
-          angle: theta + Math.PI / 2, // Tangent to circle
-          color: colors[Math.floor(Math.random() * colors.length)],
-          size: Math.random() * 1.5 + 1.5,
-          alpha: Math.min(1, r / 150) // Fade out slightly near the very center
-        });
-      }
-    }
-  }
-
-  window.addEventListener("resize", initPattern);
-  initPattern();
-
-  let mouse = { x: -1000, y: -1000, radius: 180 };
-
-  heroSection.addEventListener("mousemove", (e) => {
-    const rect = heroSection.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
+  window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
   });
 
-  heroSection.addEventListener("mouseleave", () => {
-    mouse.x = -1000;
-    mouse.y = -1000;
+  const interactables = document.querySelectorAll('a, button, input, textarea');
+  interactables.forEach(el => {
+    el.addEventListener('mouseenter', () => cursorTrail.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => cursorTrail.classList.remove('hovered'));
   });
 
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-    
-    for (let i = 0; i < particles.length; i++) {
-      let p = particles[i];
-      let dx = mouse.x - p.x;
-      let dy = mouse.y - p.y;
-      let dist = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < mouse.radius) {
-        // Dynamic Repulsion
-        let force = (mouse.radius - dist) / mouse.radius;
-        // Ease the force so it's smooth
-        let push = force * force * 4; 
-        p.vx -= (dx / dist) * push;
-        p.vy -= (dy / dist) * push;
-      }
-
-      // Spring force back to origin
-      p.vx += (p.baseX - p.x) * 0.04;
-      p.vy += (p.baseY - p.y) * 0.04;
-
-      // Friction
-      p.vx *= 0.85;
-      p.vy *= 0.85;
-
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // Draw dashed particle
-      ctx.beginPath();
-      ctx.globalAlpha = p.alpha;
-      let lineLength = 6;
-      ctx.moveTo(p.x - Math.cos(p.angle) * (lineLength / 2), p.y - Math.sin(p.angle) * (lineLength / 2));
-      ctx.lineTo(p.x + Math.cos(p.angle) * (lineLength / 2), p.y + Math.sin(p.angle) * (lineLength / 2));
-      ctx.strokeStyle = p.color;
-      ctx.lineWidth = p.size;
-      ctx.lineCap = "round";
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-    
-    requestAnimationFrame(animate);
+  function animateCursor() {
+    trailX += (mouseX - trailX) * 0.2;
+    trailY += (mouseY - trailY) * 0.2;
+    cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateCursor);
   }
+  animateCursor();
+}
+
+
+// ─────────────────────────────────────────
+// BLOCK 9 — CAROUSEL LOGIC
+// ─────────────────────────────────────────
+const slides = document.querySelectorAll(".carousel-slide");
+const dots = document.querySelectorAll(".dot");
+const btnPrev = document.getElementById("carousel-prev");
+const btnNext = document.getElementById("carousel-next");
+let currentSlide = 0;
+
+function showSlide(index) {
+  if (!slides.length) return;
+  // Wrap around
+  if (index >= slides.length) currentSlide = 0;
+  else if (index < 0) currentSlide = slides.length - 1;
+  else currentSlide = index;
+
+  slides.forEach((slide, i) => {
+    if (i === currentSlide) {
+      slide.classList.remove("hidden");
+      // slight delay for transition
+      setTimeout(() => slide.style.opacity = '1', 50);
+    } else {
+      slide.style.opacity = '0';
+      setTimeout(() => slide.classList.add("hidden"), 500); // Wait for transition
+    }
+  });
+
+  dots.forEach((dot, i) => {
+    if (i === currentSlide) {
+      dot.classList.remove("bg-gray-300");
+      dot.classList.add("bg-black");
+    } else {
+      dot.classList.remove("bg-black");
+      dot.classList.add("bg-gray-300");
+    }
+  });
+}
+
+if (btnPrev && btnNext) {
+  btnNext.addEventListener("click", () => showSlide(currentSlide + 1));
+  btnPrev.addEventListener("click", () => showSlide(currentSlide - 1));
   
-  animate();
-})();
+  dots.forEach(dot => {
+    dot.addEventListener("click", (e) => {
+      showSlide(parseInt(e.target.dataset.index));
+    });
+  });
+  
+  // Auto slide every 5 seconds
+  setInterval(() => {
+    showSlide(currentSlide + 1);
+  }, 5000);
+}
