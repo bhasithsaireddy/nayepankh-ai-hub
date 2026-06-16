@@ -1,0 +1,143 @@
+/* ══════════════════════════════════════════
+   style.css — NayePankh AI Hub
+   Custom styles that complement Tailwind CSS
+══════════════════════════════════════════ */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── CHAT WIDGET ── */
+#chat-widget {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+#chat-panel {
+  width: 350px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #e0e0e0 transparent;
+}
+
+#chat-messages::-webkit-scrollbar {
+  width: 4px;
+}
+#chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+#chat-messages::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+/* ── MESSAGE ANIMATIONS ── */
+.message {
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── TYPING INDICATOR ── */
+#typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  background: #F0F0F0;
+  width: fit-content;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2E7D32;
+  animation: bounce 1s infinite;
+}
+
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* ── FORM INPUT FOCUS ── */
+input:focus,
+textarea:focus {
+  outline: 2px solid #2E7D32 !important;
+  border-color: #2E7D32 !important;
+}
+
+/* ── NAV LINK ACTIVE INDICATOR ── */
+.nav-link {
+  position: relative;
+  padding-bottom: 2px;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #2E7D32;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── MISSION CARD HOVER ── */
+.mission-card {
+  cursor: default;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* ── STAT CARD NUMBER ── */
+.stat-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ── REGISTER SUBMIT LOADING ── */
+#reg-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ── RESPONSIVE: smaller chat on very small screens ── */
+@media (max-width: 400px) {
+  #chat-panel {
+    width: 300px;
+    height: 420px;
+  }
+}
