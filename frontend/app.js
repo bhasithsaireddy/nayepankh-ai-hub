@@ -31,7 +31,8 @@ let cityChart = null;
 // ─────────────────────────────────────────
 function openChat() {
   const panel = document.getElementById("chat-panel");
-  panel.classList.remove("hidden");
+  panel.classList.remove("chat-closed");
+  panel.classList.add("chat-open");
   isChatOpen = true;
   document.getElementById("chat-input").focus();
   scrollMessages();
@@ -39,7 +40,8 @@ function openChat() {
 
 function closeChat() {
   const panel = document.getElementById("chat-panel");
-  panel.classList.add("hidden");
+  panel.classList.remove("chat-open");
+  panel.classList.add("chat-closed");
   isChatOpen = false;
 }
 
@@ -50,6 +52,28 @@ function toggleChat() {
     openChat();
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Bind chat buttons
+  const navChatBtn = document.getElementById("nav-chat-btn");
+  const heroChatBtn = document.getElementById("hero-chat-btn");
+  const chatToggleBtn = document.getElementById("chat-toggle-btn");
+  const chatCloseBtn = document.getElementById("chat-close-btn");
+  const chatSendBtn = document.getElementById("chat-send-btn");
+  const chatInput = document.getElementById("chat-input");
+
+  if(navChatBtn) navChatBtn.addEventListener("click", openChat);
+  if(heroChatBtn) heroChatBtn.addEventListener("click", openChat);
+  if(chatToggleBtn) chatToggleBtn.addEventListener("click", toggleChat);
+  if(chatCloseBtn) chatCloseBtn.addEventListener("click", closeChat);
+  if(chatSendBtn) chatSendBtn.addEventListener("click", sendMessage);
+  
+  if(chatInput) {
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  }
+});
 
 // ─────────────────────────────────────────
 // BLOCK 4 — SEND MESSAGE
@@ -216,6 +240,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Refresh stats
         loadStats();
+
+        // Fire Confetti Animation
+        if (typeof confetti !== "undefined") {
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#2E7D32', '#4CAF50', '#FF6F00', '#FFA000']
+          });
+        }
       } else {
         throw new Error(data.detail || "Registration failed. Please try again.");
       }
