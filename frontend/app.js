@@ -15,8 +15,8 @@
 // BLOCK 1 — CONFIG
 // ─────────────────────────────────────────
 // Change this to your Render URL after deployment, e.g.:
-// const API_BASE = "https://nayepankh-ai-hub.onrender.com";
-const API_BASE = "http://localhost:8000";
+const API_BASE = "https://nayepankh-ai-hub.onrender.com";
+// const API_BASE = "http://localhost:8000";
 
 // ─────────────────────────────────────────
 // BLOCK 2 — CHAT STATE
@@ -62,13 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatSendBtn = document.getElementById("chat-send-btn");
   const chatInput = document.getElementById("chat-input");
 
-  if(navChatBtn) navChatBtn.addEventListener("click", openChat);
-  if(heroChatBtn) heroChatBtn.addEventListener("click", openChat);
-  if(chatToggleBtn) chatToggleBtn.addEventListener("click", toggleChat);
-  if(chatCloseBtn) chatCloseBtn.addEventListener("click", closeChat);
-  if(chatSendBtn) chatSendBtn.addEventListener("click", sendMessage);
-  
-  if(chatInput) {
+  if (navChatBtn) navChatBtn.addEventListener("click", openChat);
+  if (heroChatBtn) heroChatBtn.addEventListener("click", openChat);
+  if (chatToggleBtn) chatToggleBtn.addEventListener("click", toggleChat);
+  if (chatCloseBtn) chatCloseBtn.addEventListener("click", closeChat);
+  if (chatSendBtn) chatSendBtn.addEventListener("click", sendMessage);
+
+  if (chatInput) {
     chatInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") sendMessage();
     });
@@ -204,13 +204,13 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name         = document.getElementById("reg-name").value.trim();
-    const email        = document.getElementById("reg-email").value.trim();
-    const skills       = document.getElementById("reg-skills").value.trim();
-    const city         = document.getElementById("reg-city").value.trim();
-    const hours        = parseInt(document.getElementById("reg-hours").value);
-    const submitBtn    = document.getElementById("reg-submit");
-    const errorDiv     = document.getElementById("reg-error");
+    const name = document.getElementById("reg-name").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const skills = document.getElementById("reg-skills").value.trim();
+    const city = document.getElementById("reg-city").value.trim();
+    const hours = parseInt(document.getElementById("reg-hours").value);
+    const submitBtn = document.getElementById("reg-submit");
+    const errorDiv = document.getElementById("reg-error");
 
     // Reset error
     errorDiv.classList.add("hidden");
@@ -377,9 +377,9 @@ function animateCount(elementId, targetValue, suffix = "") {
   if (!el) return;
 
   const duration = 2000;       // 2 seconds
-  const steps    = 60;
+  const steps = 60;
   const stepTime = duration / steps;
-  let current    = 0;
+  let current = 0;
   const increment = targetValue / steps;
 
   const timer = setInterval(() => {
@@ -394,9 +394,9 @@ function animateCount(elementId, targetValue, suffix = "") {
 
 // Run count-up for static stats on load
 window.addEventListener("load", () => {
-  animateCount("stat-helped",   200000, "+");
+  animateCount("stat-helped", 200000, "+");
   animateCount("stat-missions", 5);
-  animateCount("stat-cities",   3);
+  animateCount("stat-cities", 3);
   loadStats(); // also animates stat-volunteers from live API
 });
 
@@ -444,7 +444,7 @@ window.addEventListener("load", () => {
     mouse.y = e.clientY - rect.top;
 
     // Spawn particles on move
-    for(let i = 0; i < 4; i++) {
+    for (let i = 0; i < 4; i++) {
       particles.push({
         x: mouse.x,
         y: mouse.y,
@@ -461,7 +461,7 @@ window.addEventListener("load", () => {
 
   function animate() {
     ctx.clearRect(0, 0, width, height);
-    
+
     for (let i = particles.length - 1; i >= 0; i--) {
       let p = particles[i];
       p.x += p.vx;
@@ -484,10 +484,10 @@ window.addEventListener("load", () => {
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
-    
+
     requestAnimationFrame(animate);
   }
-  
+
   animate();
 })();
 
@@ -533,13 +533,13 @@ function showSlide(index) {
 if (btnPrev && btnNext) {
   btnNext.addEventListener("click", () => showSlide(currentSlide + 1));
   btnPrev.addEventListener("click", () => showSlide(currentSlide - 1));
-  
+
   dots.forEach(dot => {
     dot.addEventListener("click", (e) => {
       showSlide(parseInt(e.target.dataset.index));
     });
   });
-  
+
   // Auto slide every 5 seconds
   setInterval(() => {
     showSlide(currentSlide + 1);
