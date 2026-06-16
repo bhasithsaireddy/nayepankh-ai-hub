@@ -406,32 +406,90 @@ window.addEventListener("load", () => {
 
 
 // ─────────────────────────────────────────
-// BLOCK 8 — CURSOR TRAIL
+// BLOCK 8 — CURSOR PARTICLE TRAIL (HERO ONLY)
 // ─────────────────────────────────────────
-const cursorTrail = document.getElementById("cursor-trail");
-if (cursorTrail) {
-  let mouseX = 0, mouseY = 0;
-  let trailX = 0, trailY = 0;
+(function initParticles() {
+  const heroSection = document.getElementById("home");
+  if (!heroSection) return;
 
-  window.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
+  const canvas = document.createElement("canvas");
+  canvas.id = "particle-canvas";
+  canvas.style.position = "absolute";
+  canvas.style.top = "0";
+  canvas.style.left = "0";
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  canvas.style.zIndex = "1"; // Just above background
+  canvas.style.pointerEvents = "none";
+  heroSection.insertBefore(canvas, heroSection.firstChild);
 
-  const interactables = document.querySelectorAll('a, button, input, textarea');
-  interactables.forEach(el => {
-    el.addEventListener('mouseenter', () => cursorTrail.classList.add('hovered'));
-    el.addEventListener('mouseleave', () => cursorTrail.classList.remove('hovered'));
-  });
+  const ctx = canvas.getContext("2d");
+  let width, height;
 
-  function animateCursor() {
-    trailX += (mouseX - trailX) * 0.2;
-    trailY += (mouseY - trailY) * 0.2;
-    cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%)`;
-    requestAnimationFrame(animateCursor);
+  function resize() {
+    width = canvas.width = heroSection.offsetWidth;
+    height = canvas.height = heroSection.offsetHeight;
   }
-  animateCursor();
-}
+  window.addEventListener("resize", resize);
+  resize();
+
+  const particles = [];
+  const colors = ["#4285F4", "#EA4335", "#FBBC05", "#9B27B0", "#FF4081", "#00BCD4"];
+
+  let mouse = { x: -1000, y: -1000 };
+
+  heroSection.addEventListener("mousemove", (e) => {
+    const rect = heroSection.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+
+    // Spawn particles on move
+    for(let i = 0; i < 4; i++) {
+      particles.push({
+        x: mouse.x,
+        y: mouse.y,
+        vx: (Math.random() - 0.5) * 3,
+        vy: (Math.random() - 0.5) * 3,
+        life: 1, // 1 to 0
+        decay: Math.random() * 0.02 + 0.015,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 2 + 1.5,
+        angle: Math.random() * Math.PI * 2
+      });
+    }
+  });
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    
+    for (let i = particles.length - 1; i >= 0; i--) {
+      let p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= p.decay;
+
+      if (p.life <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      ctx.beginPath();
+      ctx.globalAlpha = p.life;
+      let lineLength = 8 * p.life;
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(p.angle) * lineLength, p.y + Math.sin(p.angle) * lineLength);
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = p.size;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+})();
 
 
 // ─────────────────────────────────────────
