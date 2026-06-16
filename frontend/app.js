@@ -401,33 +401,114 @@ window.addEventListener("load", () => {
 });
 
 
+
 // ─────────────────────────────────────────
-// BLOCK 8 — CURSOR TRAIL
+// BLOCK 8 — ANTIGRAVITY PARTICLE TRAIL
 // ─────────────────────────────────────────
-const cursorTrail = document.getElementById("cursor-trail");
-if (cursorTrail) {
-  let mouseX = 0, mouseY = 0;
-  let trailX = 0, trailY = 0;
+(function initParticles() {
+  const canvas = document.createElement("canvas");
+  canvas.id = "particle-canvas";
+  canvas.style.position = "fixed";
+  canvas.style.top = "0";
+  canvas.style.left = "0";
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  canvas.style.zIndex = "0"; // Behind content
+  canvas.style.pointerEvents = "none";
+  document.body.insertBefore(canvas, document.body.firstChild);
+
+  const ctx = canvas.getContext("2d");
+  let width, height;
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const particles = [];
+  const numParticles = 800; // Dense field like Antigravity
+  
+  // Antigravity vibrant color palette (Blue, Red, Yellow, Purple)
+  const colors = ["#4285F4", "#EA4335", "#FBBC05", "#9B27B0", "#FF4081", "#00BCD4"];
+
+  // Arrange in a wide circle/spiral
+  for (let i = 0; i < numParticles; i++) {
+    // Random position concentrated towards the center but spreading out
+    const radius = Math.random() * Math.random() * (Math.max(width, height) / 1.2);
+    const theta = Math.random() * 2 * Math.PI;
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    
+    // Base position
+    const bx = cx + radius * Math.cos(theta);
+    const by = cy + radius * Math.sin(theta);
+
+    particles.push({
+      x: bx,
+      y: by,
+      baseX: bx,
+      baseY: by,
+      vx: 0,
+      vy: 0,
+      size: Math.random() * 1.5 + 1.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      angle: theta + Math.PI / 2 // Tangent to circle
+    });
+  }
+
+  let mouse = { x: -1000, y: -1000, radius: 180 };
 
   window.addEventListener("mousemove", (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
   });
 
-  // Add hover class when hovering over interactive elements
-  const interactables = document.querySelectorAll('a, button, input, textarea');
-  interactables.forEach(el => {
-    el.addEventListener('mouseenter', () => cursorTrail.classList.add('hovered'));
-    el.addEventListener('mouseleave', () => cursorTrail.classList.remove('hovered'));
-  });
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    
+    for (let i = 0; i < numParticles; i++) {
+      let p = particles[i];
+      let dx = mouse.x - p.x;
+      let dy = mouse.y - p.y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
 
-  function animateCursor() {
-    // Smooth interpolation (easing)
-    trailX += (mouseX - trailX) * 0.2;
-    trailY += (mouseY - trailY) * 0.2;
+      if (dist < mouse.radius) {
+        // Repulsion force
+        let forceDirectionX = dx / dist;
+        let forceDirectionY = dy / dist;
+        let force = (mouse.radius - dist) / mouse.radius;
+        // The closer, the stronger the push
+        p.vx -= forceDirectionX * force * 1.5;
+        p.vy -= forceDirectionY * force * 1.5;
+      }
 
-    cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%)`;
-    requestAnimationFrame(animateCursor);
+      // Spring force back to base position
+      p.vx += (p.baseX - p.x) * 0.02;
+      p.vy += (p.baseY - p.y) * 0.02;
+
+      // Friction
+      p.vx *= 0.88;
+      p.vy *= 0.88;
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Draw dashed particle
+      ctx.beginPath();
+      // Length of the dash
+      let lineLength = 6;
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + Math.cos(p.angle) * lineLength, p.y + Math.sin(p.angle) * lineLength);
+      ctx.strokeStyle = p.color;
+      ctx.lineWidth = p.size;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+    
+    requestAnimationFrame(animate);
   }
-  animateCursor();
-}
+  
+  animate();
+})();
