@@ -137,7 +137,7 @@ function appendMessage(sender, text) {
   bubble.className = "max-w-[85%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed";
 
   if (sender === "user") {
-    bubble.style.cssText = "background:#2E7D32; color:white; border-bottom-right-radius:4px;";
+    bubble.style.cssText = "background:#000000; color:white; border-bottom-right-radius:4px;";
     bubble.textContent = text;
   } else {
     bubble.style.cssText = "background:#F0F0F0; color:#1A1A1A; border-top-left-radius:4px;";
@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
             particleCount: 150,
             spread: 70,
             origin: { y: 0.6 },
-            colors: ['#2E7D32', '#4CAF50', '#FF6F00', '#FFA000']
+            colors: ['#000000', '#333333', '#888888', '#FFFFFF']
           });
         }
       } else {
@@ -317,7 +317,7 @@ async function loadStats() {
       datasets: [{
         data: deptValues,
         backgroundColor: [
-          "#2E7D32", "#4CAF50", "#FF6F00", "#FFA000", "#81C784"
+          "#000000", "#333333", "#666666", "#999999", "#CCCCCC"
         ],
         borderWidth: 2,
         borderColor: "#fff"
@@ -344,7 +344,7 @@ async function loadStats() {
       datasets: [{
         label: "Volunteers",
         data: cityValues,
-        backgroundColor: "#4CAF50",
+        backgroundColor: "#555555",
         borderRadius: 8,
         borderSkipped: false
       }]
@@ -399,3 +399,35 @@ window.addEventListener("load", () => {
   animateCount("stat-cities",   3);
   loadStats(); // also animates stat-volunteers from live API
 });
+
+
+// ─────────────────────────────────────────
+// BLOCK 8 — CURSOR TRAIL
+// ─────────────────────────────────────────
+const cursorTrail = document.getElementById("cursor-trail");
+if (cursorTrail) {
+  let mouseX = 0, mouseY = 0;
+  let trailX = 0, trailY = 0;
+
+  window.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Add hover class when hovering over interactive elements
+  const interactables = document.querySelectorAll('a, button, input, textarea');
+  interactables.forEach(el => {
+    el.addEventListener('mouseenter', () => cursorTrail.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => cursorTrail.classList.remove('hovered'));
+  });
+
+  function animateCursor() {
+    // Smooth interpolation (easing)
+    trailX += (mouseX - trailX) * 0.2;
+    trailY += (mouseY - trailY) * 0.2;
+
+    cursorTrail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%)`;
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+}
